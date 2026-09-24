@@ -1,0 +1,12 @@
+{
+  "name": "demo-lp-local-business",
+  "version": "1.0.0",
+  "description": "架空の地域ビジネス「こもれび整体院」の1ページLPデモ（素のHTML/CSS/JSのみ）",
+  "type": "module",
+  "scripts": {
+    "test": "node --test js/validate.test.js"
+  },
+  "devDependencies": {
+    "html-validate": "^9.4.0"
+  }
+}
