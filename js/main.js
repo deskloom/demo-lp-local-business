@@ -15,6 +15,8 @@ const sendButton = document.getElementById("confirm-send");
 
 let pendingData = null;
 let confirming = false;
+// 送信成功後の form.reset() が完了メッセージを上書きしないためのフラグ
+let suppressResetMessage = false;
 
 function fieldInputs() {
   return [
@@ -182,7 +184,11 @@ form.addEventListener("reset", () => {
     discardConfirm("");
     setDateMin();
     showErrors({ name: "", phone: "", email: "", contact: "", date: "", message: "" });
-    statusEl.textContent = "入力をクリアしました。";
+    if (suppressResetMessage) {
+      suppressResetMessage = false;
+    } else {
+      statusEl.textContent = "入力をクリアしました。";
+    }
   }, 0);
 });
 
@@ -212,11 +218,12 @@ sendButton.addEventListener("click", async () => {
   // デモモード: 送信せず完了表示
   if (!endpoint) {
     statusEl.textContent =
-      "送信が完了しました（デモモードのため実際には送信していません）。確認のご連絡を差し上げます。";
+      "送信が完了しました（デモモードのため実際には送信していません）。";
     confirming = false;
     pendingData = null;
     confirmEl.hidden = true;
     setInputsReadOnly(false);
+    suppressResetMessage = true;
     form.reset();
     setDateMin();
     showErrors({ name: "", phone: "", email: "", contact: "", date: "", message: "" });
@@ -236,6 +243,7 @@ sendButton.addEventListener("click", async () => {
     pendingData = null;
     confirmEl.hidden = true;
     setInputsReadOnly(false);
+    suppressResetMessage = true;
     form.reset();
     setDateMin();
   } catch (err) {

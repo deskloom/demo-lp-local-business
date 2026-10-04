@@ -10,15 +10,15 @@
 ## スクリーンショット
 
 撮影条件：Chrome headless・`--force-device-scale-factor=1`（DPR 1）。
-画像の実寸は 375x7000 / 768x5200 / 1280x5000 px です（`node` でPNGヘッダを読んで確認）。
+画像の実寸は 375x6608 / 768x4773 / 1280x4557 px です（`node` でPNGヘッダを読んで確認）。
 
-### 375px（スマホ・実寸 375x7000）
+### 375px（スマホ・実寸 375x6608）
 ![375px](docs/screenshots/375.png)
 
-### 768px（タブレット・実寸 768x5200）
+### 768px（タブレット・実寸 768x4773）
 ![768px](docs/screenshots/768.png)
 
-### 1280px（PC・実寸 1280x5000）
+### 1280px（PC・実寸 1280x4557）
 ![1280px](docs/screenshots/1280.png)
 
 ## フォルダ構成
@@ -32,6 +32,7 @@
 ├── js/
 │   ├── validate.js       # DOM非依存の入力チェック（ブラウザとNodeで共用）
 │   ├── validate.test.js  # node --test 用テスト（32件）
+│   ├── main.test.js      # main.js の送信完了メッセージのテスト（DOMスタブ・4件）
 │   └── main.js           # フォーム表示制御（確認画面・送信・エラー表示）
 ├── docs/
 │   └── screenshots/      # 375 / 768 / 1280px のスクリーンショット
@@ -47,7 +48,7 @@
 
 ```sh
 npm install   # html-validate を使う場合のみ
-npm test      # 入力チェックのテスト（32件）
+npm test      # 入力チェック32件＋送信完了メッセージ4件＝計36件
 npx html-validate index.html  # HTML検証（エラー0を確認済み）
 ```
 
@@ -73,19 +74,20 @@ chrome --headless=new --disable-gpu --force-device-scale-factor=1 \
 
 ## テストの結果
 
-- `npm test`（`node --test js/validate.test.js`）：**32件すべて通過**
+- `npm test`（`node --test js/validate.test.js js/main.test.js`）：**36件すべて通過**（validate 32件＋main 4件。main のテストは最小のDOMスタブで main.js を実行するもので、実ブラウザでの確認は下記とは別）
+
   （名前4・メール4・電話5・連絡先4・希望日9・内容4・全体2）。
   希望日はローカル暦日比較に統一し、0時台・23時台の境界テスト3件を追加した。
 - `npx html-validate index.html`：**エラー0**（終了コード0）。
 - 実ブラウザ（Chrome headless・CDP）での動作確認：空送信→各欄エラー表示、
   不正メール・過去日→形式エラー表示、正常入力→確認画面→デモモード完了表示、
   FAQ開閉。コンソールエラーなし。
-- スクリーンショット実寸（DPR 1）：375x7000 / 768x5200 / 1280x5000 px。
+- スクリーンショット実寸（DPR 1）：375x6608 / 768x4773 / 1280x4557 px（ページ実高さに合わせて2026-10-05に撮り直し）。
 
 ## 確認したこと
 
 - 375 / 768 / 1280px のスクリーンショットを目視し、はみ出し・重なり・横スクロールがないことを確認
-- スマホ幅（767px以下）で画面下に固定の「予約する」ボタが表示されること
+- スマホ幅（767px以下）で画面下に固定の「予約する」ボタンが表示されること
 - 料金表はスマホ幅で横スクロール可能な枠内に収まること
 - `FORM_ENDPOINT` が空のとき送信せず確認画面＋完了メッセージになること
 - `details` によるFAQがマウス・キーボード（Enter/Space）で開閉できること
@@ -98,7 +100,7 @@ chrome --headless=new --disable-gpu --force-device-scale-factor=1 \
 - 過去日判定をブラウザのローカル暦日（年・月・日）に統一し、`main.js` と同じ基準にした。境界テスト3件を追加（32件化）。
 - JS無効時の個人情報漏えい対策：`form method="post"`＋デモ用空actionをやめ、JSなしでは送信ボタンを出さず `<noscript>` 案内にする。
 - アクセシビリティ：料金表ラッパーに `tabindex="0"`・`role="region"`・`aria-label`、共通エラー `error-contact` を電話・メール両方の `aria-describedby` に含める、フォーカスリングを3:1以上の二重リングに。
-- スクリーンショットを DPR=1（`--force-device-scale-factor=1`）で撮り直し、実寸 375x7000 / 768x5200 / 1280x5000 を確認して記載した。
+- スクリーンショットを DPR=1（`--force-device-scale-factor=1`）で撮り直し、実寸 375x6608 / 768x4773 / 1280x4557 を確認して記載した。
 - READMEに実行コマンド・撮影条件（DPR・実寸）・未確認事項を明記した。
 
 ## できていないこと（正直に・未確認は未確認と書く）
@@ -113,7 +115,7 @@ chrome --headless=new --disable-gpu --force-device-scale-factor=1 \
   `window.AppValidate` 経由で共有している（Node テストでは ESM として副作用import）。
   将来 HTTP 配信が前提になるなら ESM の `export` 形式に戻す余地がある。
 - スクリーンショット撮影用の一時スクリプトは削除済み（再撮影時は上記コマンド参照）。
-  フルページ高さ（7000 / 5200 / 5000px）のため、実機スクロール時の追従挙動は**未確認**。
+  フルページ高さ（6608 / 4773 / 4557px）のため、実機スクロール時の追従挙動は**未確認**。
 
 ## ライセンス
 
