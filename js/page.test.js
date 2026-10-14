@@ -134,3 +134,15 @@ test("「施術の流れ」「お客様の声」のセクションが存在す�
   assert.match(html, /<section[^>]*>[\s\S]*?施術の流れ/i);
   assert.match(html, /<section[^>]*>[\s\S]*?お客様の声/i);
 });
+
+test("制作メモ（case.html）があり、LPからリンクされ、書いてある計測イベントが実装と一致する", () => {
+  const casePath = path.join(root, "case.html");
+  assert.equal(fs.existsSync(casePath), true, "case.html がありません");
+  assert.match(readIndex(), /href=["']case\.html["']/, "LPから case.html へのリンクがありません");
+  const caseHtml = fs.readFileSync(casePath, "utf8");
+  const table = (caseHtml.match(/<table class="case-table"[\s\S]*?<\/table>/) || [""])[0];
+  const documented = [...table.matchAll(/<th scope="row"><code>([a-z_]+)<\/code><\/th>/g)].map((m) => m[1]).sort();
+  const js = ["main.js", "ui.js"].map((f) => fs.readFileSync(path.join(here, f), "utf8")).join("\n");
+  const implemented = [...new Set([...js.matchAll(/(?:track\(|event:\s*)"([a-z_]+)"/g)].map((m) => m[1]))].sort();
+  assert.deepEqual(documented, implemented, "制作メモのイベント一覧と実装がずれています");
+});

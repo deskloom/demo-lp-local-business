@@ -32,3 +32,4 @@
 
 ## ページ
 - [トップページ](https://deskloom.github.io/demo-lp-local-business/)
+- [このLPの作り方（制作メモ）](https://deskloom.github.io/demo-lp-local-business/case.html)

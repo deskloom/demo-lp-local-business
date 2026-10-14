@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>このLPの作り方｜問い合わせを増やすための設計メモ（こもれび整体院デモ）</title>
+  <meta name="description" content="デモLP「こもれび整体院」で、問い合わせへの導線・計測（GA4/GTM）・AI検索（AIO）とSEO・品質確認をどう作ったかをまとめた制作メモです。">
+  <meta name="theme-color" content="#1f4d36">
+  <link rel="canonical" href="https://deskloom.github.io/demo-lp-local-business/case.html">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f4d36'/%3E%3Cpath d='M16 40 C20 22 36 14 50 14 C50 30 42 46 22 48 Z' fill='%23f3c77a'/%3E%3Cpath d='M18 46 L40 24' stroke='%231f4d36' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="このLPの作り方｜問い合わせを増やすための設計メモ">
+  <meta property="og:description" content="導線・計測（GA4/GTM）・AI検索（AIO）とSEO・品質確認の作り方。">
+  <meta property="og:url" content="https://deskloom.github.io/demo-lp-local-business/case.html">
+  <meta property="og:image" content="https://deskloom.github.io/demo-lp-local-business/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="case">
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div class="demo-bar">ポートフォリオ用のデモLPの制作メモです。店名・人物・住所・連絡先はすべて架空です。</div>
+
+  <header class="site-header is-scrolled">
+    <div class="container header-inner">
+      <a class="brand" href="./">
+        <svg class="brand-mark" width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#1f4d36"></rect><path d="M16 40 C20 22 36 14 50 14 C50 30 42 46 22 48 Z" fill="#f3c77a"></path><path d="M18 46 L40 24" stroke="#1f4d36" stroke-width="3" stroke-linecap="round"></path></svg>
+        <span>こもれび整体院</span>
+      </a>
+      <a class="btn btn-small" href="./">LPを見る</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="case-hero">
+      <div class="container container-narrow">
+        <p class="label">CASE NOTE</p>
+        <h1>このLPの作り方</h1>
+        <p class="case-lead">見た目を整えるだけでなく、<strong>「問い合わせが増えたか」を数字で確かめ、改善を続けられる</strong>ところまでを1ページに組み込みました。導線・計測・AI検索への対応・品質確認の4つに分けて説明します。</p>
+        <ul class="case-index">
+          <li><a href="#c-flow">1. 問い合わせへの導線</a></li>
+          <li><a href="#c-measure">2. 計測の設計（GA4 / GTM）</a></li>
+          <li><a href="#c-aio">3. AI検索（AIO）・SEO</a></li>
+          <li><a href="#c-quality">4. 品質の数字</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 1. 導線 -->
+    <section class="section" id="c-flow" aria-labelledby="c-flow-title">
+      <div class="container container-narrow">
+        <p class="label">01</p>
+        <h2 id="c-flow-title">問い合わせへの導線</h2>
+        <p>読む人が「予約しよう」と思った瞬間に、どこにいてもボタンが手の届くところにあるようにしました。</p>
+        <ul class="case-points">
+          <li><b>予約・電話の入口を5か所に配置</b>：ヘッダー、ファーストビュー（Web予約と電話の2択）、アクセス欄の電話番号、予約欄の電話番号、スマホの画面下の固定ボタン。</li>
+          <li><b>スマホの固定ボタンは、予約フォームが見えたら自動で隠す</b>：フォームの入力をじゃましないため。</li>
+          <li><b>不安を先に消す順番</b>：お悩み → 大切にしていること → 施術の流れ → 料金 → お客様の声 → 院長 → よくある質問 → アクセス → 予約。「何をされるのか」「いくらかかるのか」「無理に通わされないか」に、予約の前に答えています。</li>
+          <li><b>フォームは入力を最小限に</b>：電話かメールのどちらか1つでよく、入力ミスはその場で欄の下に表示。確認画面のあとに入力が変わったら確認を取り消し、送信内容のずれを防ぎます。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 2. 計測 -->
+    <section class="section section-tint" id="c-measure" aria-labelledby="c-measure-title">
+      <div class="container container-narrow">
+        <p class="label">02</p>
+        <h2 id="c-measure-title">計測の設計（GA4 / GTM）</h2>
+        <p>ページの中の動きを、Googleタグマネージャー（GTM）が読み取れる <code>dataLayer</code> にイベントとして積んでいます。GTMのコンテナを入れれば、そのままGA4のイベントとして集計できます。<strong>お名前・電話番号などの入力値は一切送りません。</strong></p>
+
+        <p class="visually-hidden" id="funnel-desc">問い合わせまでの流れと、各段階で記録するイベント</p>
+        <ol class="funnel" aria-describedby="funnel-desc">
+          <li><span>ページを見る</span><code>page_view</code><small>GA4が自動で記録</small></li>
+          <li><span>どこまで読んだか</span><code>section_view</code></li>
+          <li><span>予約・電話ボタン</span><code>cta_click</code></li>
+          <li><span>フォーム入力開始</span><code>form_start</code></li>
+          <li><span>確認画面へ</span><code>form_confirm</code></li>
+          <li><span>送信完了</span><code>form_submit</code></li>
+        </ol>
+
+        <div class="table-wrap" tabindex="0" role="region" aria-label="計測イベントの一覧（左右にスクロールできます）">
+          <table class="case-table">
+            <caption>記録するイベントと、そこから分かること</caption>
+            <thead>
+              <tr><th scope="col">イベント</th><th scope="col">いつ</th><th scope="col">一緒に送る情報</th><th scope="col">分かること</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row"><code>section_view</code></th><td>各セクションが画面の中央に0.8秒以上留まったとき（1回だけ。ボタンで一気に通り過ぎた分は数えない）</td><td><code>section</code>（どのセクションか）</td><td>どこで読むのをやめているか</td></tr>
+              <tr><th scope="row"><code>cta_click</code></th><td>予約・電話ボタンを押したとき</td><td><code>cta_location</code>（header / hero / sticky / access / reserve）、<code>cta_type</code>（web / tel）</td><td>どの位置のボタンが効いているか、Webと電話のどちらが選ばれているか</td></tr>
+              <tr><th scope="row"><code>form_start</code></th><td>フォームに最初に入力したとき</td><td>なし</td><td>フォームまで来た人のうち、書き始めた人の割合</td></tr>
+              <tr><th scope="row"><code>form_error</code></th><td>入力ミスで先に進めなかったとき</td><td><code>error_fields</code>（どの欄か）</td><td>どの入力欄でつまずいているか</td></tr>
+              <tr><th scope="row"><code>form_confirm</code></th><td>確認画面に進んだとき</td><td>なし</td><td>入力を終えた人の数</td></tr>
+              <tr><th scope="row"><code>form_submit</code></th><td>送信が完了したとき</td><td><code>mode</code>（live / demo）</td><td>問い合わせ数そのもの（最重要の指標）</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>この数字で見る指標の例</h3>
+        <ul class="case-points">
+          <li><b>問い合わせ率</b> ＝ <code>form_submit</code> ÷ <code>page_view</code>。月の目標件数から、必要な訪問数を逆算できます（例：問い合わせ率1%で月30件なら、月3,000訪問）。</li>
+          <li><b>ボタンのクリック率</b> ＝ <code>cta_click</code> ÷ <code>page_view</code>。<code>cta_location</code> 別に見ると、どの位置のボタンを残し・どこを直すべきかが分かります。</li>
+          <li><b>フォーム完了率</b> ＝ <code>form_submit</code> ÷ <code>form_start</code>。低ければ、<code>form_error</code> の <code>error_fields</code> でつまずいている欄を特定します。</li>
+          <li><b>読了の深さ</b>：<code>section_view</code> の減り方で、離脱の多いセクションを見つけて順番や文章を直します。</li>
+        </ul>
+
+        <p class="case-try"><a class="btn" href="./?track=1">計測の動きを実際に見る</a><span>LPを開くと右下に記録されたイベントが表示されます。ボタンを押したり、フォームに入力したりしてみてください。</span></p>
+      </div>
+    </section>
+
+    <!-- 3. AIO -->
+    <section class="section" id="c-aio" aria-labelledby="c-aio-title">
+      <div class="container container-narrow">
+        <p class="label">03</p>
+        <h2 id="c-aio-title">AI検索（AIO）・SEO</h2>
+        <p>ChatGPTやGoogleのAIによる概要などが、ページの内容を正しく読み取り、引用しやすい形に整えています。実際に引用されるかは各サービスの仕様次第なので、ここでは「読み取りやすい構造にしたこと」と「その確かめ方」を書いています。</p>
+        <ul class="case-points">
+          <li><b>構造化データ（JSON-LD）</b>：店舗情報（<code>HealthAndBeautyBusiness</code>：住所・営業時間・電話・料金メニュー）と、よくある質問（<code>FAQPage</code>）。</li>
+          <li><b>FAQの構造化データと、ページに表示しているFAQの一致を自動テストで確認</b>：片方だけ直して食い違う、というよくある事故を防ぎます。</li>
+          <li><b>見出しを「質問と答え」の形に</b>：よくある質問は、AIがそのまま回答に使いやすい短い文で書いています。</li>
+          <li><b>AI向けの要約ファイル</b>：<a href="llms.txt">llms.txt</a>（店の概要・料金・営業時間・FAQをMarkdownで要約）。</li>
+          <li><b>検索エンジン向けの基本</b>：<a href="robots.txt">robots.txt</a>、<a href="sitemap.xml">sitemap.xml</a>、正規URL（canonical）、SNSで共有されたときの画像とタイトル（OGP・1200×630の画像）。</li>
+        </ul>
+        <details class="case-code">
+          <summary>FAQの構造化データの中身を見る</summary>
+          <pre><code>{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "初めてでも受けられますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "はい。初回は20分のカウンセリングで…"
+      }
+    },
+    …（全6問）
+  ]
+}</code></pre>
+        </details>
+      </div>
+    </section>
+
+    <!-- 4. 品質 -->
+    <section class="section section-tint" id="c-quality" aria-labelledby="c-quality-title">
+      <div class="container container-narrow">
+        <p class="label">04</p>
+        <h2 id="c-quality-title">品質の数字</h2>
+        <p>「動いているように見える」ではなく、実際に測った数字です。</p>
+        <ul class="scores" id="lighthouse-scores">
+          <!--LIGHTHOUSE-->
+        </ul>
+        <ul class="case-points">
+          <li><b>自動テスト 45件がすべて通過</b>：入力チェック、送信の流れ、計測イベントの順番（入力値を送っていないことも確認）、ページの構成とAI検索向けファイルの有無。</li>
+          <li><b>HTMLの文法チェック（html-validate）でエラー0</b>。</li>
+          <li><b>スマホ（375px）・タブレット（768px）・PC（1280px）の3つの幅</b>で画面を撮って確認し、横にはみ出すスクロールがないことを数値でも確認。</li>
+          <li><b>読みやすさ</b>：本文の文字と背景の色の差（コントラスト比）を、アクセシビリティの基準（WCAG AA・4.5:1）以上に。キーボードだけでも操作でき、動きを減らす設定の人には演出を止めます。</li>
+          <li><b>軽さ</b>：外部のフォント・画像・ライブラリを読み込まず、イラストはすべてコードで描いています。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="c-next-title">
+      <div class="container container-narrow">
+        <h2 id="c-next-title">本番の店舗サイトにするときは</h2>
+        <ul class="case-points">
+          <li>写真・文章を実際のものに差し替え、GTMのコンテナを設置（計測イベントはこのまま使えます）。</li>
+          <li>予約フォームの送信先（メール通知・スプレッドシート・予約システムなど）を接続。</li>
+          <li>公開後、上の指標を見ながら、ボタンの位置・文章・セクションの順番を改善。</li>
+        </ul>
+        <p class="case-back"><a class="btn btn-lg" href="./">LPに戻る</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p class="container footer-note">ポートフォリオ用のデモLPの制作メモです。実在の店舗・人物・連絡先とは関係ありません。</p>
+  </footer>
+</body>
+</html>

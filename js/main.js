@@ -15,6 +15,16 @@ const sendButton = document.getElementById("confirm-send");
 
 let pendingData = null;
 let confirming = false;
+let started = false;
+
+/**
+ * 計測イベントを dataLayer に積む（GTM を入れればそのまま GA4 に送れる形）。
+ * 個人情報（入力した値）は積まない。
+ */
+function track(event, params) {
+  const dl = (window.dataLayer = window.dataLayer || []);
+  dl.push(Object.assign({ event }, params || {}));
+}
 // 送信成功後の form.reset() が完了メッセージを上書きしないためのフラグ
 let suppressResetMessage = false;
 
@@ -151,6 +161,9 @@ form.addEventListener("submit", (e) => {
   const { valid, errors } = validateForm(data);
   showErrors(errors);
   if (!valid) {
+    track("form_error", {
+      error_fields: Object.keys(errors).filter((k) => errors[k]).join(","),
+    });
     statusEl.textContent = "入力に誤りがあります。各項目の下のメッセージをご確認ください。";
     discardConfirm("");
     statusEl.textContent = "入力に誤りがあります。各項目の下のメッセージをご確認ください。";
@@ -162,11 +175,16 @@ form.addEventListener("submit", (e) => {
   confirming = true;
   setInputsReadOnly(true);
   renderConfirm(data);
+  track("form_confirm");
   statusEl.textContent = "入力内容をご確認ください。よろしければ「送信する」を押してください。";
 });
 
 // 確認画面を出したあとに入力が変わったら確認状態を破棄する
 form.addEventListener("input", () => {
+  if (!started) {
+    started = true;
+    track("form_start");
+  }
   if (confirming) {
     discardConfirm("入力が変更されたため確認状態を取り消しました。もう一度「確認する」を押してください。");
   }
@@ -217,6 +235,7 @@ sendButton.addEventListener("click", async () => {
   const endpoint = getEndpoint();
   // デモモード: 送信せず完了表示
   if (!endpoint) {
+    track("form_submit", { mode: "demo" });
     statusEl.textContent =
       "送信が完了しました（デモモードのため実際には送信していません）。";
     confirming = false;
@@ -238,6 +257,7 @@ sendButton.addEventListener("click", async () => {
       body: JSON.stringify(pendingData),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    track("form_submit", { mode: "live" });
     statusEl.textContent = "送信が完了しました。確認のご連絡を差し上げます。";
     confirming = false;
     pendingData = null;

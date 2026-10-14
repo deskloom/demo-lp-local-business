@@ -49,6 +49,7 @@ function setup(endpoint, fetchImpl) {
     JSON,
   };
   vm.runInNewContext(source, sandbox);
+  els.window = sandbox.window;
   return els;
 }
 
@@ -91,4 +92,25 @@ test("送信成功後のクリアが次の手動クリアのメッセージを�
   els["reserve-form"].reset();
   await tick();
   assert.equal(els["form-status"].textContent, "入力をクリアしました。");
+});
+
+test("計測: 入力開始→確認→送信の順に dataLayer へ積み、入力値は積まない", async () => {
+  const els = setup("", async () => ({ ok: true }));
+  await els["reserve-form"].fire("input");
+  await els["reserve-form"].fire("input");
+  await submitAndSend(els);
+  const events = els.window.dataLayer.map((e) => e.event);
+  assert.equal(events.join(","), "form_start,form_confirm,form_submit");
+  assert.equal(els.window.dataLayer[2].mode, "demo");
+  assert.doesNotMatch(JSON.stringify(els.window.dataLayer), /山田|example\.com|肩こり/);
+});
+
+test("計測: 本番モードの送信成功は mode=live、失敗時は form_submit を積まない", async () => {
+  const ok = setup("https://example.invalid/form", async () => ({ ok: true, status: 200 }));
+  await submitAndSend(ok);
+  assert.equal(ok.window.dataLayer.at(-1).event, "form_submit");
+  assert.equal(ok.window.dataLayer.at(-1).mode, "live");
+  const ng = setup("https://example.invalid/form", async () => ({ ok: false, status: 500 }));
+  await submitAndSend(ng);
+  assert.ok(!ng.window.dataLayer.some((e) => e.event === "form_submit"));
 });
