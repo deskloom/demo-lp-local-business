@@ -3,3 +3,7 @@ docs/.chrome-profile/
 docs/.chrome-profile2/
 TASK.md
 FIX-TASK.md
+
+.chrome-tmp/
+.polish-run.log
+TASK-polish.md

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://deskloom.github.io/demo-lp-local-business/sitemap.xml
