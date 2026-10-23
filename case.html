@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>このLPの作り方｜問い合わせを増やすための設計メモ（こもれび整体院デモ）</title>
   <meta name="description" content="デモLP「こもれび整体院」で、問い合わせへの導線・計測（GA4/GTM）・AI検索（AIO）とSEO・品質確認をどう作ったかをまとめた制作メモです。">
-  <meta name="theme-color" content="#1f4d36">
+  <meta name="theme-color" content="#2e4a3b">
   <link rel="canonical" href="https://deskloom.github.io/demo-lp-local-business/case.html">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f4d36'/%3E%3Cpath d='M16 40 C20 22 36 14 50 14 C50 30 42 46 22 48 Z' fill='%23f3c77a'/%3E%3Cpath d='M18 46 L40 24' stroke='%231f4d36' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%232e4a3b'/%3E%3Cpath d='M11 28C12 17 19 11 30 10C30 21 23 28 12 29Z' fill='%23f1e2c0'/%3E%3Cpath d='M12 29L24 17' stroke='%232e4a3b' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E">
   <meta property="og:type" content="article">
   <meta property="og:title" content="このLPの作り方｜問い合わせを増やすための設計メモ">
   <meta property="og:description" content="導線・計測（GA4/GTM）・AI検索（AIO）とSEO・品質確認の作り方。">
@@ -23,8 +23,8 @@
   <header class="site-header is-scrolled">
     <div class="container header-inner">
       <a class="brand" href="./">
-        <svg class="brand-mark" width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#1f4d36"></rect><path d="M16 40 C20 22 36 14 50 14 C50 30 42 46 22 48 Z" fill="#f3c77a"></path><path d="M18 46 L40 24" stroke="#1f4d36" stroke-width="3" stroke-linecap="round"></path></svg>
-        <span>こもれび整体院</span>
+        <svg class="brand-mark" width="36" height="36" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#2e4a3b"></circle><path d="M11 28C12 17 19 11 30 10C30 21 23 28 12 29Z" fill="#f1e2c0"></path><path d="M12 29L24 17" stroke="#2e4a3b" stroke-width="1.6" stroke-linecap="round"></path></svg>
+        <span class="brand-text"><span class="brand-name">こもれび整体院</span><span class="brand-en" aria-hidden="true">KOMOREBI SEITAI</span></span>
       </a>
       <a class="btn btn-small" href="./">LPを見る</a>
     </div>
@@ -41,6 +41,7 @@
           <li><a href="#c-measure">2. 計測の設計（GA4 / GTM）</a></li>
           <li><a href="#c-aio">3. AI検索（AIO）・SEO</a></li>
           <li><a href="#c-quality">4. 品質の数字</a></li>
+          <li><a href="#c-design">5. デザインの方針</a></li>
         </ul>
       </div>
     </section>
@@ -52,7 +53,7 @@
         <h2 id="c-flow-title">問い合わせへの導線</h2>
         <p>読む人が「予約しよう」と思った瞬間に、どこにいてもボタンが手の届くところにあるようにしました。</p>
         <ul class="case-points">
-          <li><b>予約・電話の入口を5か所に配置</b>：ヘッダー、ファーストビュー（Web予約と電話の2択）、アクセス欄の電話番号、予約欄の電話番号、スマホの画面下の固定ボタン。</li>
+          <li><b>予約・電話の入口を6か所に配置</b>：ヘッダー（PCでは電話番号も常に表示）、ファーストビュー（Web予約と電話の2択）、料金欄の「初回の予約をする」、アクセス欄の電話番号、予約欄の電話番号、スマホの画面下の固定ボタン。</li>
           <li><b>スマホの固定ボタンは、予約フォームが見えたら自動で隠す</b>：フォームの入力をじゃましないため。</li>
           <li><b>不安を先に消す順番</b>：お悩み → 大切にしていること → 施術の流れ → 料金 → お客様の声 → 院長 → よくある質問 → アクセス → 予約。「何をされるのか」「いくらかかるのか」「無理に通わされないか」に、予約の前に答えています。</li>
           <li><b>フォームは入力を最小限に</b>：電話かメールのどちらか1つでよく、入力ミスはその場で欄の下に表示。確認画面のあとに入力が変わったら確認を取り消し、送信内容のずれを防ぎます。</li>
@@ -85,7 +86,7 @@
             </thead>
             <tbody>
               <tr><th scope="row"><code>section_view</code></th><td>各セクションが画面の中央に0.8秒以上留まったとき（1回だけ。ボタンで一気に通り過ぎた分は数えない）</td><td><code>section</code>（どのセクションか）</td><td>どこで読むのをやめているか</td></tr>
-              <tr><th scope="row"><code>cta_click</code></th><td>予約・電話ボタンを押したとき</td><td><code>cta_location</code>（header / hero / sticky / access / reserve）、<code>cta_type</code>（web / tel）</td><td>どの位置のボタンが効いているか、Webと電話のどちらが選ばれているか</td></tr>
+              <tr><th scope="row"><code>cta_click</code></th><td>予約・電話ボタンを押したとき</td><td><code>cta_location</code>（header / hero / menu / sticky / access / reserve）、<code>cta_type</code>（web / tel）</td><td>どの位置のボタンが効いているか、Webと電話のどちらが選ばれているか</td></tr>
               <tr><th scope="row"><code>form_start</code></th><td>フォームに最初に入力したとき</td><td>なし</td><td>フォームまで来た人のうち、書き始めた人の割合</td></tr>
               <tr><th scope="row"><code>form_error</code></th><td>入力ミスで先に進めなかったとき</td><td><code>error_fields</code>（どの欄か）</td><td>どの入力欄でつまずいているか</td></tr>
               <tr><th scope="row"><code>form_confirm</code></th><td>確認画面に進んだとき</td><td>なし</td><td>入力を終えた人の数</td></tr>
@@ -147,23 +148,47 @@
         <h2 id="c-quality-title">品質の数字</h2>
         <p>「動いているように見える」ではなく、実際に測った数字です。</p>
         <ul class="scores" id="lighthouse-scores">
-          <li><strong>96</strong><span>パフォーマンス</span></li>
+          <li><strong>97</strong><span>パフォーマンス</span></li>
           <li><strong>100</strong><span>アクセシビリティ</span></li>
           <li><strong>100</strong><span>ベストプラクティス</span></li>
           <li><strong>100</strong><span>SEO</span></li>
-          <li class="scores-note">Google の Lighthouse 12 でスマホ（モバイル）設定のまま、公開中のこのLPを計測（2026年10月15日）。PC（デスクトップ）設定では4項目すべて100でした。点数は回線などで多少変わります。</li>
+          <li class="scores-note">Google の Lighthouse 12 をスマホ（モバイル）設定のまま使い、作り直したLPを手元のサーバーで計測（2026年10月23日）。PC（デスクトップ）設定では4項目すべて100。レイアウトのずれ（CLS）は0.001、ページ全体の転送量は約156KB（見出しフォント58KBを含む）。点数は回線などで多少変わります。</li>
         </ul>
         <ul class="case-points">
-          <li><b>自動テスト 45件がすべて通過</b>：入力チェック、送信の流れ、計測イベントの順番（入力値を送っていないことも確認）、ページの構成とAI検索向けファイルの有無。</li>
+          <li><b>自動テスト 51件がすべて通過</b>：入力チェック、送信の流れ、計測イベントの順番（入力値を送っていないことも確認）、ページの構成とAI検索向けファイルの有無に加え、外部ファイルを読み込んでいないこと、見出しの文字がフォントに欠けていないこと、受付時間の表と構造化データの一致、効果を言い切る表現が無いことも確かめます。</li>
           <li><b>HTMLの文法チェック（html-validate）でエラー0</b>。</li>
-          <li><b>スマホ（375px）・タブレット（768px）・PC（1280px）の3つの幅</b>で画面を撮って確認し、横にはみ出すスクロールがないことを数値でも確認。</li>
-          <li><b>読みやすさ</b>：本文の文字と背景の色の差（コントラスト比）を、アクセシビリティの基準（WCAG AA・4.5:1）以上に。キーボードだけでも操作でき、動きを減らす設定の人には演出を止めます。</li>
-          <li><b>軽さ</b>：外部のフォント・画像・ライブラリを読み込まず、イラストはすべてコードで描いています。</li>
+          <li><b>スマホ（375px）・タブレット（768px）・PC（1280px）の3つの幅</b>で画面を撮って確認し、320〜1440pxで横にはみ出すスクロールがないことを数値でも確認。</li>
+          <li><b>読みやすさ</b>：本文の文字と背景の色の差（コントラスト比）を、アクセシビリティの基準（WCAG AA・4.5:1）以上に（補足の灰色の文字でも5.6:1）。入力欄の枠線も3:1以上。キーボードだけでも操作でき、動きを減らす設定の人には演出を止めます。</li>
+          <li><b>軽さ</b>：外部のフォント・画像・ライブラリを読み込まず、イラストはすべてコードで描いています。同梱するのは見出し用に文字を絞った明朝フォント（58KB）だけです。</li>
         </ul>
       </div>
     </section>
 
-    <section class="section" aria-labelledby="c-next-title">
+    <!-- 5. デザイン -->
+    <section class="section" id="c-design" aria-labelledby="c-design-title">
+      <div class="container container-narrow">
+        <p class="label">05</p>
+        <h2 id="c-design-title">デザインの方針</h2>
+        <p>「どこかで見たテンプレート」に見えないこと、写真がなくても「ちゃんとした院」に見えることを目標に、実在の人気整体院・クリニックのサイトの質感（余白の広さ、書体の品、導線の分かりやすさ）を参考にしました。</p>
+        <h3>色は5つだけ</h3>
+        <ul class="palette">
+          <li><span class="swatch swatch-1"></span><b>生成り</b><code>#f6f3ed</code>地の色</li>
+          <li><span class="swatch swatch-2"></span><b>石</b><code>#ece7dd</code>交互のセクション</li>
+          <li><span class="swatch swatch-3"></span><b>墨</b><code>#1f2622</code>文字</li>
+          <li><span class="swatch swatch-4"></span><b>苔</b><code>#2e4a3b</code>ボタン・ブランド</li>
+          <li><span class="swatch swatch-5"></span><b>土</b><code>#8e4f33</code>小見出しだけに使う差し色</li>
+        </ul>
+        <h3>書体と組み方</h3>
+        <ul class="case-points">
+          <li><b>見出しは明朝、本文は端末のゴシック</b>：見出し用の明朝（しっぽり明朝・OFL）を、このページで使う文字だけに絞って同梱しました（約58KB）。どの端末でも同じ見出しになり、外部のフォント配信には頼りません。</li>
+          <li><b>大胆にするのは1か所だけ</b>：ファーストビューの「光の窓」（壁に揺れる木の葉の影）。ほかは影つきのカードをやめ、細い罫線と余白で区切っています。</li>
+          <li><b>人物や施術のイラストを描き込まない</b>：素人っぽさの一番の原因になりやすいため、光と影・逆光のシルエット・体の線画など、写真の代わりとして「雰囲気」を伝える図版に絞りました。</li>
+          <li><b>信頼の材料を先に出す</b>：ファーストビュー直下に営業時間・定休日・アクセス・支払い方法、アクセス欄に受付時間の表。医療広告ガイドラインに配慮し、効果を言い切る・約束する表現は使っていません（使っていないことをテストで確認）。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section-tint" aria-labelledby="c-next-title">
       <div class="container container-narrow">
         <h2 id="c-next-title">本番の店舗サイトにするときは</h2>
         <ul class="case-points">

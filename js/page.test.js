@@ -146,3 +146,105 @@ test("制作メモ（case.html）があり、LPからリンクされ、書いて
   const implemented = [...new Set([...js.matchAll(/(?:track\(|event:\s*)"([a-z_]+)"/g)].map((m) => m[1]))].sort();
   assert.deepEqual(documented, implemented, "制作メモのイベント一覧と実装がずれています");
 });
+
+/** 開始タグごとに、その要素の中身（入れ子を数えて終了タグまで）を取り出す */
+function innerOf(html, startIndex, tag) {
+  const re = new RegExp(`<(/?)${tag}\\b[^>]*>`, "gi");
+  re.lastIndex = startIndex;
+  let depth = 0;
+  let m;
+  let begin = -1;
+  while ((m = re.exec(html))) {
+    if (m[1] === "") {
+      if (depth === 0) begin = re.lastIndex;
+      depth += 1;
+    } else {
+      depth -= 1;
+      if (depth === 0) return html.slice(begin, m.index);
+    }
+  }
+  return "";
+}
+
+test("外部のフォント・画像・スクリプト・CSSを読み込まない", () => {
+  const css = fs.readFileSync(path.join(root, "css/style.css"), "utf8");
+  for (const name of ["index.html", "case.html"]) {
+    const html = fs.readFileSync(path.join(root, name), "utf8");
+    assert.doesNotMatch(html, /<(?:script|img|iframe|source|video|audio)\b[^>]*\ssrc=["'](?:https?:)?\/\//i, `${name} に外部の src があります`);
+    const links = [...html.matchAll(/<link\b[^>]*>/gi)].map((m) => m[0]);
+    for (const link of links) {
+      if (/rel=["']canonical["']/i.test(link)) continue;
+      assert.doesNotMatch(link, /href=["'](?:https?:)?\/\//i, `${name} に外部の link があります: ${link}`);
+    }
+    assert.doesNotMatch(html, /url\(\s*["']?(?:https?:)?\/\//i, `${name} のインラインCSSに外部URLがあります`);
+  }
+  assert.doesNotMatch(css, /url\(\s*["']?(?:https?:)?\/\//i, "style.css に外部URLがあります");
+  assert.doesNotMatch(css, /@import/i, "style.css に @import があります");
+});
+
+test("同梱の明朝フォントは woff2・100KB以下・ライセンス同梱で、見出しの文字をすべて含む", () => {
+  const fontPath = path.join(root, "fonts/komorebi-mincho.woff2");
+  const buf = fs.readFileSync(fontPath);
+  assert.equal(buf.subarray(0, 4).toString("latin1"), "wOF2", "woff2 ではありません");
+  assert.ok(buf.length <= 100 * 1024, `フォントが ${buf.length} バイトあります（100KB以下にしてください）`);
+  assert.equal(fs.existsSync(path.join(root, "fonts/OFL.txt")), true, "fonts/OFL.txt がありません");
+  const chars = new Set(fs.readFileSync(path.join(root, "fonts/subset-chars.txt"), "utf8"));
+  const css = fs.readFileSync(path.join(root, "css/style.css"), "utf8");
+  assert.match(css, /@font-face\s*{[^}]*komorebi-mincho\.woff2[^}]*font-display:\s*swap/i);
+  for (const name of ["index.html", "case.html"]) {
+    const html = fs.readFileSync(path.join(root, name), "utf8").replace(/<svg[\s\S]*?<\/svg>/gi, "");
+    // 明朝で表示する要素: h1 / h2 と class に serif を含む要素
+    const starts = [...html.matchAll(/<(h1|h2|[a-z0-9]+(?=[^>]*class=["'][^"']*\bserif\b))\b[^>]*>/gi)];
+    assert.ok(starts.length > 5, `${name} に明朝の見出しが見つかりません`);
+    for (const m of starts) {
+      const text = displayText(innerOf(html, m.index, m[1]));
+      const missing = [...new Set([...text].filter((c) => c.trim() && !chars.has(c)))];
+      assert.deepEqual(missing, [], `${name} の「${text.trim().slice(0, 20)}」にフォントに無い文字があります（fonts/README.md の手順で作り直してください）`);
+    }
+  }
+});
+
+test("SVG・画像は、意味のあるものに代替テキスト、飾りは読み上げ対象外", () => {
+  const html = readIndex();
+  const svgs = [...html.matchAll(/<svg\b[^>]*>/gi)].map((m) => m[0]);
+  assert.ok(svgs.length >= 8);
+  for (const tag of svgs) {
+    const ok = /aria-hidden=["']true["']/.test(tag) || (/role=["']img["']/.test(tag) && /aria-label=["'][^"']{8,}["']/.test(tag));
+    assert.ok(ok, `代替テキストも aria-hidden も無いSVGがあります: ${tag}`);
+  }
+  for (const img of html.match(/<img\b[^>]*>/gi) || []) assert.match(img, /\balt=/, `alt の無い img: ${img}`);
+});
+
+test("受付時間の表が JSON-LD の営業日と一致する（木・日を休みとして表示）", () => {
+  const html = readIndex();
+  const docs = extractJsonLd(html).map((b) => JSON.parse(b));
+  const biz = docs.find((d) => d["@type"] === "HealthAndBeautyBusiness");
+  const days = biz.openingHoursSpecification.flatMap((s) => s.dayOfWeek);
+  const table = (html.match(/<table class="hours">[\s\S]*?<\/table>/) || [""])[0];
+  const heads = [...table.matchAll(/<th scope="col">([^<]+)<\/th>/g)].map((m) => m[1]).slice(1);
+  const cells = [...table.matchAll(/<td>[\s\S]*?<\/td>/g)].map((m) => /受付/.test(m[0]));
+  const map = { 月: "Monday", 火: "Tuesday", 水: "Wednesday", 木: "Thursday", 金: "Friday", 土: "Saturday", "日・祝": "Sunday" };
+  assert.equal(heads.length, 7);
+  heads.forEach((h, i) => assert.equal(cells[i], days.includes(map[h]), `${h} の表示が JSON-LD と違います`));
+  assert.match(html, /9:00〜19:00/);
+  assert.equal(biz.openingHoursSpecification[0].opens, "09:00");
+  assert.equal(biz.openingHoursSpecification[0].closes, "19:00");
+});
+
+test("医療広告ガイドラインで問題になる表現を使わない", () => {
+  for (const name of ["index.html", "case.html", "llms.txt"]) {
+    const raw = fs.readFileSync(path.join(root, name), "utf8");
+    const text = name.endsWith(".html") ? displayText(raw) : raw;
+    for (const word of ["治る", "治ります", "完治", "必ず改善", "必ず良く", "効果があります", "絶対", "No.1", "日本一", "診療", "治療"]) {
+      assert.ok(!text.includes(word), `${name} に「${word}」があります`);
+    }
+  }
+});
+
+test("動きを減らす設定でアニメーションを止め、フォーカスが見える", () => {
+  const css = fs.readFileSync(path.join(root, "css/style.css"), "utf8");
+  const reduce = (css.match(/@media \(prefers-reduced-motion: reduce\)\s*{[\s\S]*?\n}/) || [""])[0];
+  assert.match(reduce, /animation:\s*none\s*!important/);
+  assert.match(reduce, /transition:\s*none\s*!important/);
+  assert.match(css, /:focus-visible\s*{[^}]*outline:\s*2px solid/);
+});
